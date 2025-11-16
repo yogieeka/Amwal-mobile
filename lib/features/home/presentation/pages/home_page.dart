@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../transactions/presentation/providers/transaction_provider.dart';
+import '../../../transactions/presentation/pages/add_transaction_page.dart';
 
 /// Home page - Main dashboard of the app
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final stats = ref.watch(transactionStatsProvider);
+    final transactions = ref.watch(transactionsProvider);
+    final recentTransactions = transactions.take(5).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Amwal Islamic'),
@@ -41,13 +48,13 @@ class _HomePageState extends State<HomePage> {
             _buildGreetingCard(),
 
             // Quick Stats
-            _buildQuickStats(),
+            _buildQuickStats(stats),
 
             // Quick Actions
             _buildQuickActions(),
 
             // Recent Transactions
-            _buildRecentTransactions(),
+            _buildRecentTransactions(recentTransactions),
 
             const SizedBox(height: 16),
           ],
@@ -56,8 +63,12 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Add new transaction
-          _showAddTransactionDialog();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddTransactionPage(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -112,14 +123,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildQuickStats() {
+  Widget _buildQuickStats(TransactionStats stats) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ringkasan Keuangan',
+            'Ringkasan Keuangan Bulan Ini',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
@@ -127,19 +138,19 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  'Total Aset',
-                  Formatters.formatCurrency(0), // TODO: Get from data
-                  Icons.account_balance_wallet,
-                  AppColors.success,
+                  'Pemasukan',
+                  Formatters.formatCompactCurrency(stats.totalIncome),
+                  Icons.arrow_downward,
+                  AppColors.income,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildStatCard(
-                  'Zakat Tertunda',
-                  Formatters.formatCurrency(0), // TODO: Get from data
-                  Icons.volunteer_activism,
-                  AppColors.warning,
+                  'Pengeluaran',
+                  Formatters.formatCompactCurrency(stats.totalExpense),
+                  Icons.arrow_upward,
+                  AppColors.expense,
                 ),
               ),
             ],
@@ -149,19 +160,19 @@ class _HomePageState extends State<HomePage> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  'Investasi',
-                  Formatters.formatCurrency(0), // TODO: Get from data
-                  Icons.trending_up,
-                  AppColors.accentBlue,
+                  'Zakat/Sedekah',
+                  Formatters.formatCompactCurrency(stats.totalZakatSedekah),
+                  Icons.volunteer_activism,
+                  AppColors.zakat,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildStatCard(
-                  'Hutang',
-                  Formatters.formatCurrency(0), // TODO: Get from data
-                  Icons.receipt_long,
-                  AppColors.error,
+                  'Saldo',
+                  Formatters.formatCompactCurrency(stats.balance),
+                  Icons.account_balance_wallet,
+                  stats.balance >= 0 ? AppColors.success : AppColors.error,
                 ),
               ),
             ],
@@ -301,7 +312,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildRecentTransactions() {
+  Widget _buildRecentTransactions(List transactions) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -321,8 +332,70 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 12),
-          // TODO: Replace with actual data
-          _buildEmptyState(),
+          transactions.isEmpty
+              ? _buildEmptyState()
+              : Column(
+                  children: transactions.map((transaction) {
+                    Color typeColor;
+                    IconData typeIcon;
+
+                    switch (transaction.type.name) {
+                      case 'income':
+                        typeColor = AppColors.income;
+                        typeIcon = Icons.arrow_downward;
+                        break;
+                      case 'expense':
+                        typeColor = AppColors.expense;
+                        typeIcon = Icons.arrow_upward;
+                        break;
+                      case 'zakat':
+                      case 'sedekah':
+                        typeColor = AppColors.zakat;
+                        typeIcon = Icons.volunteer_activism;
+                        break;
+                      default:
+                        typeColor = AppColors.accentBlue;
+                        typeIcon = Icons.trending_up;
+                    }
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: typeColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(typeIcon, color: typeColor, size: 20),
+                        ),
+                        title: Text(
+                          transaction.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        subtitle: Text(
+                          '${transaction.category} • ${Formatters.formatDate(transaction.date)}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.grey600,
+                          ),
+                        ),
+                        trailing: Text(
+                          '${transaction.type.name == 'expense' || transaction.type.name == 'zakat' || transaction.type.name == 'sedekah' ? '-' : '+'} ${Formatters.formatCompactCurrency(transaction.amount)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: typeColor,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
         ],
       ),
     );
