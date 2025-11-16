@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
+import 'zakat_mal_calculator_page.dart';
+import 'zakat_penghasilan_calculator_page.dart';
+import 'zakat_fitrah_calculator_page.dart';
 
 /// Zakat calculation and management page
 class ZakatPage extends StatelessWidget {
@@ -35,6 +38,12 @@ class ZakatPage extends StatelessWidget {
                 'Zakat atas harta yang mencapai nisab',
                 Icons.account_balance_wallet,
                 AppColors.primaryGreen,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ZakatMalCalculatorPage(),
+                  ),
+                ),
               ),
               _buildZakatTypeCard(
                 context,
@@ -42,6 +51,12 @@ class ZakatPage extends StatelessWidget {
                 'Zakat atas gaji dan penghasilan',
                 Icons.payments,
                 AppColors.secondaryGold,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ZakatPenghasilanCalculatorPage(),
+                  ),
+                ),
               ),
               _buildZakatTypeCard(
                 context,
@@ -49,6 +64,13 @@ class ZakatPage extends StatelessWidget {
                 'Zakat atas usaha dan perdagangan',
                 Icons.store,
                 AppColors.accentBlue,
+                () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Kalkulator akan segera hadir'),
+                    ),
+                  );
+                },
               ),
               _buildZakatTypeCard(
                 context,
@@ -56,6 +78,13 @@ class ZakatPage extends StatelessWidget {
                 'Zakat atas hasil pertanian',
                 Icons.agriculture,
                 AppColors.success,
+                () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Kalkulator akan segera hadir'),
+                    ),
+                  );
+                },
               ),
               _buildZakatTypeCard(
                 context,
@@ -63,6 +92,12 @@ class ZakatPage extends StatelessWidget {
                 'Zakat yang wajib di bulan Ramadan',
                 Icons.mosque,
                 AppColors.accentPurple,
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ZakatFitrahCalculatorPage(),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 24),
@@ -127,13 +162,12 @@ class ZakatPage extends StatelessWidget {
     String description,
     IconData icon,
     Color color,
+    VoidCallback onTap,
   ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
-        onTap: () {
-          // TODO: Navigate to specific zakat calculator
-        },
+        onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
