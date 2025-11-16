@@ -186,7 +186,7 @@ class _ZakatPenghasilanCalculatorPageState
               _buildResultCard(),
             ],
 
-            const SizedBox(height: 32),
+            const SizedBox(height: 80),
           ],
         ),
       ),

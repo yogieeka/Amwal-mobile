@@ -338,7 +338,7 @@ class _AddTransactionPageState extends ConsumerState<AddTransactionPage> {
               icon: Icons.save,
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 80),
           ],
         ),
       ),

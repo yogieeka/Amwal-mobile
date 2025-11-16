@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/config/theme_provider.dart';
 
 /// Settings page - App settings and preferences
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pengaturan'),
@@ -45,9 +48,9 @@ class SettingsPage extends StatelessWidget {
             icon: Icons.dark_mode_outlined,
             title: 'Mode Gelap',
             subtitle: 'Aktifkan mode gelap',
-            value: false,
+            value: themeMode == ThemeMode.dark,
             onChanged: (value) {
-              // TODO: Toggle dark mode
+              ref.read(themeModeProvider.notifier).toggleTheme();
             },
           ),
 

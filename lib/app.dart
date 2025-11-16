@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/config/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
+import 'core/config/theme_provider.dart';
 
 /// Main application widget
 class AmwalIslamicApp extends ConsumerWidget {
@@ -10,6 +11,8 @@ class AmwalIslamicApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp.router(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
@@ -17,7 +20,7 @@ class AmwalIslamicApp extends ConsumerWidget {
       // Theme
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light, // TODO: Make this dynamic from settings
+      themeMode: themeMode,
 
       // Routing
       routerConfig: AppRouter.router,

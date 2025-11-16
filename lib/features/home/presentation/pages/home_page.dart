@@ -6,6 +6,7 @@ import '../../../../core/utils/formatters.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../transactions/presentation/providers/transaction_provider.dart';
 import '../../../transactions/presentation/pages/add_transaction_page.dart';
+import '../../../transactions/presentation/pages/analytics_page.dart';
 
 /// Home page - Main dashboard of the app
 class HomePage extends ConsumerStatefulWidget {
@@ -274,6 +275,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Icons.school,
                 AppColors.accentPurple,
                 () => context.push(AppConstants.routeEducation),
+              ),
+              _buildActionButton(
+                'Analisis',
+                Icons.analytics,
+                AppColors.secondaryGold,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AnalyticsPage(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
