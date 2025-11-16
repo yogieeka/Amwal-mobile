@@ -55,6 +55,7 @@ class AppConstants {
   static const String routeGoals = '/goals';
   static const String routeEducation = '/education';
   static const String routeSettings = '/settings';
+  static const String routeAchievements = '/achievements';
 
   // Transaction Categories - Income
   static const List<String> incomeCategories = [

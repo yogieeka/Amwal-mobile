@@ -8,6 +8,7 @@ import '../../features/debt/presentation/pages/debt_page.dart';
 import '../../features/goals/presentation/pages/goals_page.dart';
 import '../../features/education/presentation/pages/education_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/gamification/presentation/pages/achievements_page.dart';
 import '../constants/app_constants.dart';
 
 /// GoRouter configuration for the app
@@ -80,6 +81,14 @@ class AppRouter {
         pageBuilder: (context, state) => MaterialPage(
           key: state.pageKey,
           child: const SettingsPage(),
+        ),
+      ),
+      GoRoute(
+        path: AppConstants.routeAchievements,
+        name: 'achievements',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const AchievementsPage(),
         ),
       ),
     ],
