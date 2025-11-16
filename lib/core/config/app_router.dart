@@ -7,6 +7,7 @@ import '../../features/investment/presentation/pages/investment_page.dart';
 import '../../features/debt/presentation/pages/debt_page.dart';
 import '../../features/goals/presentation/pages/goals_page.dart';
 import '../../features/education/presentation/pages/education_page.dart';
+import '../../features/discover/presentation/pages/discover_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/gamification/presentation/pages/achievements_page.dart';
 import '../constants/app_constants.dart';
@@ -73,6 +74,14 @@ class AppRouter {
         pageBuilder: (context, state) => MaterialPage(
           key: state.pageKey,
           child: const EducationPage(),
+        ),
+      ),
+      GoRoute(
+        path: AppConstants.routeDiscover,
+        name: 'discover',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const DiscoverPage(),
         ),
       ),
       GoRoute(

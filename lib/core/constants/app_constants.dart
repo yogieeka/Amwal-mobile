@@ -54,6 +54,7 @@ class AppConstants {
   static const String routeDebt = '/debt';
   static const String routeGoals = '/goals';
   static const String routeEducation = '/education';
+  static const String routeDiscover = '/discover';
   static const String routeSettings = '/settings';
   static const String routeAchievements = '/achievements';
 

@@ -467,7 +467,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             context.push(AppConstants.routeTransactions);
             break;
           case 2:
-            context.push(AppConstants.routeInvestment);
+            context.push(AppConstants.routeDiscover);
             break;
           case 3:
             context.push(AppConstants.routeSettings);
@@ -486,9 +486,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           label: 'Transaksi',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.trending_up_outlined),
-          activeIcon: Icon(Icons.trending_up),
-          label: 'Investasi',
+          icon: Icon(Icons.explore_outlined),
+          activeIcon: Icon(Icons.explore),
+          label: 'Temukan',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings_outlined),
